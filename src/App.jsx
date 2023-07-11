@@ -11,9 +11,10 @@ const TURNS = {
 //'children': para mostrar la X / O
 //'updateBoard': para actualizar el tablero ---CAMBIADO---
 //'index': para saber la posición del cuadro donde se hizo click
+// eslint-disable-next-line react/prop-types
 const Square = ({ children, updateBoard, index }) => {
   const handleClick = () => {
-    updateBoard();
+    updateBoard(index);
   };
 
   return (
@@ -29,24 +30,25 @@ function App() {
   // mientras que la función para actualizar el tablero se llamará setBoard
 
   //Estado para los turnos
-  const [turn, setTurn] = useState(TURNS.X); //El juego lo empieza las X
+  const [turn, setTurn] = useState(TURNS.X);
 
-  /*Encargado de todo lo que pasa en el juego
-    -De ver si hay ganador
-    -De actualizar el tablero
-    -Ver de quién es el turno
-  */
-  const updateBoard = () => {
+  const updateBoard = (index) => {
+    //Sí ya tienen algo esa casilla, no hacer nada
+    if (board[index]) return;
+
+    //buenas prácticas: no modificar los parámetros
+    const newBoard = [...board];
+    newBoard[index] = turn;
+    setBoard(newBoard);
+
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X; // para que se actualice de quién es el turno
     setTurn(newTurn); // se llama al ESTADO para que cambie el vlaor inicial
-    console.log(turn);
   };
 
   return (
     <main className="board">
       <h1>Juego del gato</h1>
       <section className="game">
-        {/*updateBoard se pasa así para que sólo se active cuando se haga click */}
         {board.map((_, index) => {
           return (
             <Square key={index} index={index} updateBoard={updateBoard}>
@@ -56,10 +58,6 @@ function App() {
         })}
       </section>
 
-      {/*Sección para mostrar gráficamente de quién es el turno USANSO EL ESTADO
-      
-        Propósito de REACT: cambiar visualmente un componente a través del estado de el componente padre
-      */}
       <section className="turn">
         <h2>Turno</h2>
         <Square>{turn === TURNS.X ? TURNS.X : TURNS.O}</Square>
