@@ -1,48 +1,60 @@
 import { useState } from "react";
-import "./App.css";
+import "./css/App.css";
+import Square from "./components/Square";
 
 const TURNS = {
-  X: "x",
-  O: "o",
+  X: "×",
+  O: "░",
 };
 
-//Creación del nuevo componente: Cuadrado que conforma el gato
-//parámetros:
-//'children': para mostrar la X / O
-//'updateBoard': para actualizar el tablero ---CAMBIADO---
-//'index': para saber la posición del cuadro donde se hizo click
-// eslint-disable-next-line react/prop-types
-const Square = ({ children, updateBoard, index }) => {
-  const handleClick = () => {
-    updateBoard(index);
-  };
-
-  return (
-    <div className="square" onClick={handleClick}>
-      {children}
-    </div>
-  );
-};
+const COMBO_WINNER = [
+  //HORIZONTAL
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  //DIAGONAL
+  [0, 4, 8],
+  [2, 4, 6],
+  //VERTICAL
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+];
 
 function App() {
-  //Para poder guardar el avance del juego se deben de usar un estado
-  const [board, setBoard] = useState(Array(9).fill(null)); //El estado inicial se da por board
-  // mientras que la función para actualizar el tablero se llamará setBoard
+  const [board, setBoard] = useState(Array(9).fill(null));
 
-  //Estado para los turnos
   const [turn, setTurn] = useState(TURNS.X);
+
+  //false = hay empate
+  const [winner, setWinner] = useState(null);
 
   const updateBoard = (index) => {
     //Sí ya tienen algo esa casilla, no hacer nada
+    //Se apoya en que todas las casillas empiezan en 'null'
     if (board[index]) return;
 
     //buenas prácticas: no modificar los parámetros
+    //¿operador rest entre corchetes para dar a entender que 'board' es un arreglo?
     const newBoard = [...board];
     newBoard[index] = turn;
     setBoard(newBoard);
 
-    const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X; // para que se actualice de quién es el turno
-    setTurn(newTurn); // se llama al ESTADO para que cambie el vlaor inicial
+    //cambiar de turno --BUENAS PRÁCTICAS--
+    const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
+    setTurn(newTurn);
+  };
+
+  const resetBoard = () => {
+    //buenas prácticas: no modificar los parámetros
+    const newBoard = Array(9).fill(null);
+    setBoard(newBoard);
+    setTurn(TURNS.X);
+  };
+
+  const endGame = () => {
+    //game is tied
+    board.forEach((square) => (square ? true : false)); //return implícito en arrow functions
   };
 
   return (
@@ -61,6 +73,7 @@ function App() {
       <section className="turn">
         <h2>Turno</h2>
         <Square>{turn === TURNS.X ? TURNS.X : TURNS.O}</Square>
+        <button onClick={resetBoard}>RESET GAME</button>
       </section>
     </main>
   );
