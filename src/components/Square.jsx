@@ -1,5 +1,5 @@
 // eslint-disable-next-line react/prop-types
-const Square = ({ children, updateBoard, index }) => {
+const Square = ({ children, index, updateBoard }) => {
   const handleClick = () => {
     updateBoard(index);
   };

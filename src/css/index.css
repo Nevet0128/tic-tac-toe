@@ -96,7 +96,7 @@ body {
   left: 0;
   display: grid;
   place-items: center;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0);
 }
 
 .winner .text {
@@ -105,6 +105,7 @@ body {
   width: 320px;
   border: 2px solid #eee;
   border-radius: 10px;
+  font-size: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
