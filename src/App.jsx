@@ -4,6 +4,7 @@ import Square from "./components/Square";
 import CheckWinner from "./logic/CheckWinner";
 import { TURNS } from "./constants.js";
 import WinnerModal from "./components/WinnerModal";
+import { saveGameToStorage, resetGameStorage } from "./logic/storage";
 
 export function App() {
   const [board, setBoard] = useState(() => {
@@ -30,8 +31,7 @@ export function App() {
     setTurn(TURNS.X);
     setWinner(null);
     //Bugfix de devolver la partida al resetear el juego y después recargar la página
-    window.localStorage.removeItem("board");
-    window.localStorage.removeItem("turn");
+    resetGameStorage();
   };
 
   const updateBoard = (index) => {
@@ -50,8 +50,10 @@ export function App() {
     setTurn(newTurn);
 
     //Guardando la partida un movimiento antes
-    window.localStorage.setItem("board", JSON.stringify(newBoard));
-    window.localStorage.setItem("turn", newTurn);
+    saveGameToStorage({
+      board: newBoard,
+      turn: newTurn,
+    });
 
     let isWinner = CheckWinner(newBoard);
 
